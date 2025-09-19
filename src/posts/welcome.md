@@ -2,6 +2,7 @@
 title: "Welcome to Zenith"
 date: "2025-09-01"
 description: "My first blog post introducing Zenith"
+categories: ["Web Development", "TypeScript", "Blog"]
 ---
 
 # Welcome to Zenith
