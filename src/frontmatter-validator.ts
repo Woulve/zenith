@@ -3,6 +3,7 @@ export interface PostMetadata {
   date: string;
   description: string;
   slug: string;
+  categories: string[];
 }
 
 export interface ValidationResult {
@@ -13,7 +14,11 @@ export interface ValidationResult {
 
 export class FrontmatterValidator {
   private static readonly REQUIRED_FIELDS = ['title', 'date'] as const;
-  private static readonly OPTIONAL_FIELDS = ['description', 'slug'] as const;
+  private static readonly OPTIONAL_FIELDS = [
+    'description',
+    'slug',
+    'categories',
+  ] as const;
 
   static validate(
     data: Record<string, unknown>,
@@ -37,7 +42,17 @@ export class FrontmatterValidator {
     }
 
     for (const field of this.OPTIONAL_FIELDS) {
-      if (data[field] && typeof data[field] === 'string') {
+      if (field === 'categories') {
+        if (data[field]) {
+          if (Array.isArray(data[field])) {
+            metadata.categories = (data[field] as string[])
+              .filter((cat) => typeof cat === 'string' && cat.trim() !== '')
+              .map((cat) => cat.trim());
+          } else if (typeof data[field] === 'string') {
+            metadata.categories = [data[field].trim()];
+          }
+        }
+      } else if (data[field] && typeof data[field] === 'string') {
         metadata[field] = data[field].trim();
       }
     }
@@ -70,6 +85,13 @@ export class FrontmatterValidator {
         `Missing description field in ${filename}. Consider adding for better SEO.`,
       );
       metadata.description = metadata.title || 'Blog post';
+    }
+
+    if (!metadata.categories || metadata.categories.length === 0) {
+      metadata.categories = ['uncategorized'];
+      warnings.push(
+        `No categories specified in ${filename}. Using 'uncategorized'.`,
+      );
     }
 
     const isValid = this.REQUIRED_FIELDS.every(

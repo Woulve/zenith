@@ -87,6 +87,7 @@
 
 .post-meta {
   display: flex;
+  flex-wrap: wrap;
   gap: spacing(sm);
   margin-bottom: spacing(sm);
   font-size: 0.9rem;
@@ -99,6 +100,33 @@
   .author::before {
     content: "•";
     margin-right: spacing(xs);
+  }
+}
+
+.post-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: spacing(xs);
+  margin-top: spacing(xs);
+}
+
+.category-tag {
+  display: inline-block;
+  padding: spacing(xs) spacing(sm);
+  background-color: color(background-light);
+  color: color(text);
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid color(border);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: color(accent);
+    color: color(background);
+    border-color: color(accent);
+    text-decoration: none;
   }
 }
 
@@ -149,5 +177,73 @@
 
   p {
     margin-bottom: spacing(md);
+  }
+}
+
+// Pagination
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: spacing(xl);
+  padding-top: spacing(lg);
+  border-top: 1px solid color(border);
+  gap: spacing(md);
+
+  &-prev,
+  &-next {
+    padding: spacing(sm) spacing(md);
+    background-color: color(primary);
+    color: color(background);
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: color(accent);
+      text-decoration: none;
+    }
+  }
+
+  &-info {
+    font-size: 0.9rem;
+    color: color(text-light);
+    font-weight: 500;
+  }
+}
+
+// Feed links
+.feed-links {
+  display: flex;
+  gap: spacing(sm);
+}
+
+.feed-link {
+  display: flex;
+  align-items: center;
+  gap: spacing(xs);
+  padding: spacing(xs) spacing(sm);
+  background-color: color(background-light);
+  color: color(text);
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  border: 1px solid color(border);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: color(accent);
+    color: color(background);
+    border-color: color(accent);
+    text-decoration: none;
+  }
+
+  .feed-icon {
+    font-size: 0.9rem;
+  }
+
+  .feed-text {
+    font-weight: 500;
   }
 }

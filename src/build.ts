@@ -14,6 +14,15 @@ interface Post extends PostMetadata {
   htmlContent: string;
 }
 
+interface PaginationInfo {
+  currentPage: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+  nextUrl?: string;
+  prevUrl?: string;
+}
+
 interface WriteOperation {
   path: string;
   content: string;
@@ -24,6 +33,7 @@ class BlogGenerator {
   private cssModTime: number = 0;
   private buildTimeout: NodeJS.Timeout | null = null;
   private isBuilding: boolean = false;
+  private readonly postsPerPage = 5;
 
   async build() {
     if (this.isBuilding) {
@@ -97,6 +107,8 @@ class BlogGenerator {
       config.distDir,
       path.join(config.distDir, 'posts'),
       path.join(config.distDir, 'styles'),
+      path.join(config.distDir, 'categories'),
+      path.join(config.distDir, 'page'),
     ];
 
     await Promise.all(
@@ -233,6 +245,15 @@ class BlogGenerator {
 
     const operations: WriteOperation[] = [];
 
+    operations.push(...(await this.generatePostPages(posts)));
+    operations.push(...(await this.generatePaginatedPages(posts)));
+    operations.push(...(await this.generateCategoryPages(posts)));
+
+    return operations;
+  }
+
+  private async generatePostPages(posts: Post[]): Promise<WriteOperation[]> {
+    const operations: WriteOperation[] = [];
     const postTemplate = await this.loadTemplate('post.html');
 
     for (const post of posts) {
@@ -247,11 +268,21 @@ class BlogGenerator {
         publishedTime: post.date,
       });
 
+      const categoriesHtml = post.categories
+        .map(
+          (cat) =>
+            `<a href="/categories/${this.slugify(
+              cat,
+            )}/" class="category-tag">${cat}</a>`,
+        )
+        .join(' ');
+
       const html = TemplateEngine.renderUnsafe(postTemplate, {
         title: post.title,
         date: this.formatDate(post.date),
         description: post.description,
         content: post.htmlContent,
+        categories: categoriesHtml,
         seoMeta,
         siteTitle: config.siteTitle,
       });
@@ -262,41 +293,179 @@ class BlogGenerator {
       });
     }
 
+    return operations;
+  }
+
+  private async generatePaginatedPages(
+    posts: Post[],
+  ): Promise<WriteOperation[]> {
+    const operations: WriteOperation[] = [];
     const indexTemplate = await this.loadTemplate('index.html');
-    const postListHtml = posts
-      .map(
-        (post) => `
-        <article class="post-preview">
-          <h2><a href="/posts/${post.slug}/">${post.title}</a></h2>
-          <div class="post-meta">
-            <time datetime="${post.date}">${this.formatDate(post.date)}</time>
-          </div>
-          <p class="post-description">${post.description}</p>
-        </article>
-      `,
-      )
-      .join('');
+    const totalPages = Math.ceil(posts.length / this.postsPerPage);
 
-    const indexSeoMeta = this.generateSEOMeta({
-      title: config.siteTitle,
-      description: config.siteDescription,
-      url: config.baseUrl,
-      type: 'website',
-    });
+    for (let page = 1; page <= totalPages; page++) {
+      const startIndex = (page - 1) * this.postsPerPage;
+      const endIndex = startIndex + this.postsPerPage;
+      const pagePosts = posts.slice(startIndex, endIndex);
 
-    const indexHtml = TemplateEngine.renderUnsafe(indexTemplate, {
-      title: config.siteTitle,
-      posts: postListHtml,
-      seoMeta: indexSeoMeta,
-      siteTitle: config.siteTitle,
-    });
+      const pagination: PaginationInfo = {
+        currentPage: page,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+        nextUrl:
+          page < totalPages
+            ? page === 1
+              ? '/page/2/'
+              : `/page/${page + 1}/`
+            : undefined,
+        prevUrl:
+          page > 1 ? (page === 2 ? '/' : `/page/${page - 1}/`) : undefined,
+      };
 
-    operations.push({
-      path: path.join(config.distDir, 'index.html'),
-      content: indexHtml,
-    });
+      const postListHtml = pagePosts
+        .map((post) => this.generatePostPreview(post))
+        .join('');
+
+      const paginationHtml = this.generatePaginationHtml(pagination);
+
+      const seoMeta = this.generateSEOMeta({
+        title:
+          page === 1 ? config.siteTitle : `${config.siteTitle} - Page ${page}`,
+        description: config.siteDescription,
+        url: page === 1 ? config.baseUrl : `${config.baseUrl}/page/${page}/`,
+        type: 'website',
+      });
+
+      const html = TemplateEngine.renderUnsafe(indexTemplate, {
+        title:
+          page === 1 ? config.siteTitle : `${config.siteTitle} - Page ${page}`,
+        posts: postListHtml,
+        pagination: paginationHtml,
+        seoMeta,
+        siteTitle: config.siteTitle,
+      });
+
+      if (page === 1) {
+        operations.push({
+          path: path.join(config.distDir, 'index.html'),
+          content: html,
+        });
+      } else {
+        const pageDir = path.join(config.distDir, 'page', page.toString());
+        await this.ensureDirectory(pageDir);
+        operations.push({
+          path: path.join(pageDir, 'index.html'),
+          content: html,
+        });
+      }
+    }
 
     return operations;
+  }
+
+  private async generateCategoryPages(
+    posts: Post[],
+  ): Promise<WriteOperation[]> {
+    const operations: WriteOperation[] = [];
+    const categoryTemplate = await this.loadTemplate('category.html');
+
+    const postsByCategory = new Map<string, Post[]>();
+
+    posts.forEach((post) => {
+      post.categories.forEach((category) => {
+        const categorySlug = this.slugify(category);
+        if (!postsByCategory.has(categorySlug)) {
+          postsByCategory.set(categorySlug, []);
+        }
+        postsByCategory.get(categorySlug)!.push(post);
+      });
+    });
+
+    for (const [categorySlug, categoryPosts] of postsByCategory) {
+      const categoryName =
+        categoryPosts[0].categories.find(
+          (cat) => this.slugify(cat) === categorySlug,
+        ) || categorySlug;
+      const categoryDir = path.join(config.distDir, 'categories', categorySlug);
+      await this.ensureDirectory(categoryDir);
+
+      const postListHtml = categoryPosts
+        .map((post) => this.generatePostPreview(post))
+        .join('');
+
+      const seoMeta = this.generateSEOMeta({
+        title: `${categoryName} - ${config.siteTitle}`,
+        description: `Posts in ${categoryName} category`,
+        url: `${config.baseUrl}/categories/${categorySlug}/`,
+        type: 'website',
+      });
+
+      const html = TemplateEngine.renderUnsafe(categoryTemplate, {
+        title: `${categoryName} - ${config.siteTitle}`,
+        posts: postListHtml,
+        pagination: '',
+        seoMeta,
+        siteTitle: config.siteTitle,
+      });
+
+      operations.push({
+        path: path.join(categoryDir, 'index.html'),
+        content: html,
+      });
+    }
+
+    return operations;
+  }
+
+  private generatePostPreview(post: Post): string {
+    const categoriesHtml = post.categories
+      .map(
+        (cat) =>
+          `<a href="/categories/${this.slugify(
+            cat,
+          )}/" class="category-tag">${cat}</a>`,
+      )
+      .join(' ');
+
+    return `
+      <article class="post-preview">
+        <h2><a href="/posts/${post.slug}/">${post.title}</a></h2>
+        <div class="post-meta">
+          <time datetime="${post.date}">${this.formatDate(post.date)}</time>
+          <div class="post-categories">${categoriesHtml}</div>
+        </div>
+        <p class="post-description">${post.description}</p>
+      </article>
+    `;
+  }
+
+  private generatePaginationHtml(pagination: PaginationInfo): string {
+    if (pagination.totalPages <= 1) return '';
+
+    let html = '<nav class="pagination">';
+
+    if (pagination.hasPrev) {
+      html += `<a href="${pagination.prevUrl}" class="pagination-prev">← Previous</a>`;
+    }
+
+    html += `<span class="pagination-info">Page ${pagination.currentPage} of ${pagination.totalPages}</span>`;
+
+    if (pagination.hasNext) {
+      html += `<a href="${pagination.nextUrl}" class="pagination-next">Next →</a>`;
+    }
+
+    html += '</nav>';
+    return html;
+  }
+
+  private slugify(text: string): string {
+    return text
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
   }
 
   private async batchWrite(operations: WriteOperation[]) {
@@ -326,6 +495,32 @@ class BlogGenerator {
         priority: '0.8',
       })),
     ];
+
+    const totalPages = Math.ceil(posts.length / this.postsPerPage);
+    for (let page = 2; page <= totalPages; page++) {
+      urls.push({
+        loc: `${config.baseUrl}/page/${page}/`,
+        lastmod: new Date().toISOString().split('T')[0],
+        changefreq: 'weekly',
+        priority: '0.7',
+      });
+    }
+
+    const categories = new Set<string>();
+    posts.forEach((post) => {
+      post.categories.forEach((category) => {
+        categories.add(this.slugify(category));
+      });
+    });
+
+    categories.forEach((categorySlug) => {
+      urls.push({
+        loc: `${config.baseUrl}/categories/${categorySlug}/`,
+        lastmod: new Date().toISOString().split('T')[0],
+        changefreq: 'weekly',
+        priority: '0.6',
+      });
+    });
 
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
