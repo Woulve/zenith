@@ -1,0 +1,134 @@
+@use "variables" as *;
+
+// Responsive utilities
+@media (max-width: breakpoint(tablet)) {
+  .main-content {
+    padding: spacing(lg) spacing(md);
+  }
+
+  .post-header {
+    .post-title {
+      font-size: font-size(xl);
+    }
+
+    .post-meta {
+      flex-direction: column;
+      gap: spacing(xs);
+
+      .post-author::before {
+        display: none;
+      }
+    }
+  }
+
+  .post-preview .post-meta {
+    flex-direction: column;
+    gap: spacing(xs);
+
+    .author::before {
+      display: none;
+    }
+  }
+
+  // Hide utility classes on tablet
+  .tablet\:hidden {
+    display: none;
+  }
+
+  .tablet\:flex-col {
+    flex-direction: column;
+  }
+
+  .tablet\:text-center {
+    text-align: center;
+  }
+}
+
+@media (max-width: breakpoint(mobile)) {
+  .nav {
+    &-home {
+      font-size: font-size(md);
+    }
+  }
+
+  .feed-links {
+    gap: 4px;
+  }
+
+  .feed-link {
+    padding: 4px 8px;
+    font-size: font-size(xs);
+
+    &-text {
+      display: none;
+    }
+
+    &-icon {
+      font-size: 0.9rem;
+    }
+  }
+
+  .post-header .post-title {
+    font-size: 1.75rem;
+  }
+
+  // Mobile utility classes
+  .mobile\:hidden {
+    display: none;
+  }
+
+  .mobile\:flex-col {
+    flex-direction: column;
+  }
+
+  .mobile\:text-center {
+    text-align: center;
+  }
+
+  .mobile\:text-sm {
+    font-size: font-size(sm);
+  }
+
+  .mobile\:p-sm {
+    padding: spacing(sm);
+  }
+
+  .mobile\:gap-xs {
+    gap: spacing(xs);
+  }
+}
+
+// Responsive spacing utilities
+@media (max-width: breakpoint(tablet)) {
+  .tablet\:px-sm {
+    padding-left: spacing(sm);
+    padding-right: spacing(sm);
+  }
+  .tablet\:py-sm {
+    padding-top: spacing(sm);
+    padding-bottom: spacing(sm);
+  }
+  .tablet\:mb-sm {
+    margin-bottom: spacing(sm);
+  }
+  .tablet\:mt-sm {
+    margin-top: spacing(sm);
+  }
+}
+
+@media (max-width: breakpoint(mobile)) {
+  .mobile\:px-xs {
+    padding-left: spacing(xs);
+    padding-right: spacing(xs);
+  }
+  .mobile\:py-xs {
+    padding-top: spacing(xs);
+    padding-bottom: spacing(xs);
+  }
+  .mobile\:mb-xs {
+    margin-bottom: spacing(xs);
+  }
+  .mobile\:mt-xs {
+    margin-top: spacing(xs);
+  }
+}

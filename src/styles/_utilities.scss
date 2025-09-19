@@ -1,0 +1,240 @@
+@use "sass:map";
+@use "variables" as *;
+
+// Spacing utilities
+@each $name, $value in $spacing {
+  .m-#{$name} {
+    margin: $value;
+  }
+  .mt-#{$name} {
+    margin-top: $value;
+  }
+  .mb-#{$name} {
+    margin-bottom: $value;
+  }
+  .ml-#{$name} {
+    margin-left: $value;
+  }
+  .mr-#{$name} {
+    margin-right: $value;
+  }
+  .mx-#{$name} {
+    margin-left: $value;
+    margin-right: $value;
+  }
+  .my-#{$name} {
+    margin-top: $value;
+    margin-bottom: $value;
+  }
+
+  .p-#{$name} {
+    padding: $value;
+  }
+  .pt-#{$name} {
+    padding-top: $value;
+  }
+  .pb-#{$name} {
+    padding-bottom: $value;
+  }
+  .pl-#{$name} {
+    padding-left: $value;
+  }
+  .pr-#{$name} {
+    padding-right: $value;
+  }
+  .px-#{$name} {
+    padding-left: $value;
+    padding-right: $value;
+  }
+  .py-#{$name} {
+    padding-top: $value;
+    padding-bottom: $value;
+  }
+}
+
+// Typography utilities
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+
+.font-weight-normal {
+  font-weight: 400;
+}
+.font-weight-medium {
+  font-weight: 500;
+}
+.font-weight-semibold {
+  font-weight: 600;
+}
+.font-weight-bold {
+  font-weight: 700;
+}
+
+@each $name, $size in map.get($typography, font-sizes) {
+  .text-#{$name} {
+    font-size: $size;
+  }
+}
+
+// Color utilities
+@each $name, $color in $colors {
+  .text-#{$name} {
+    color: $color;
+  }
+  .bg-#{$name} {
+    background-color: $color;
+  }
+  .border-#{$name} {
+    border-color: $color;
+  }
+}
+
+// Layout utilities
+.container {
+  max-width: map.get($layout, max-width);
+  margin: 0 auto;
+  padding: 0 spacing(md);
+}
+
+.flex {
+  display: flex;
+}
+.flex-column {
+  flex-direction: column;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.items-center {
+  align-items: center;
+}
+.items-start {
+  align-items: flex-start;
+}
+.items-end {
+  align-items: flex-end;
+}
+.justify-center {
+  justify-content: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.justify-start {
+  justify-content: flex-start;
+}
+.justify-end {
+  justify-content: flex-end;
+}
+
+.gap-xs {
+  gap: spacing(xs);
+}
+.gap-sm {
+  gap: spacing(sm);
+}
+.gap-md {
+  gap: spacing(md);
+}
+.gap-lg {
+  gap: spacing(lg);
+}
+.gap-xl {
+  gap: spacing(xl);
+}
+
+.w-full {
+  width: 100%;
+}
+.h-full {
+  height: 100%;
+}
+.min-h-screen {
+  min-height: 100vh;
+}
+
+// Border utilities
+.border {
+  border: 1px solid color(border);
+}
+.border-top {
+  border-top: 1px solid color(border);
+}
+.border-bottom {
+  border-bottom: 1px solid color(border);
+}
+.border-left {
+  border-left: 1px solid color(border);
+}
+.border-right {
+  border-right: 1px solid color(border);
+}
+
+.rounded {
+  border-radius: map.get($layout, border-radius);
+}
+.rounded-sm {
+  border-radius: map.get($layout, border-radius-sm);
+}
+.rounded-pill {
+  border-radius: map.get($layout, border-radius-pill);
+}
+
+// Position utilities
+.sticky {
+  position: sticky;
+}
+.relative {
+  position: relative;
+}
+.absolute {
+  position: absolute;
+}
+.fixed {
+  position: fixed;
+}
+
+// Display utilities
+.block {
+  display: block;
+}
+.inline {
+  display: inline;
+}
+.inline-block {
+  display: inline-block;
+}
+.hidden {
+  display: none;
+}
+
+// Overflow utilities
+.overflow-hidden {
+  overflow: hidden;
+}
+.overflow-auto {
+  overflow: auto;
+}
+.overflow-x-auto {
+  overflow-x: auto;
+}
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
+// Z-index utilities
+.z-10 {
+  z-index: 10;
+}
+.z-50 {
+  z-index: 50;
+}
+.z-100 {
+  z-index: 100;
+}

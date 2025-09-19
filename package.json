@@ -1,0 +1,41 @@
+{
+  "name": "zenith",
+  "version": "1.0.0",
+  "description": "A minimalistic personal blog built with TypeScript, SCSS, and HTML",
+  "type": "module",
+  "main": "build.js",
+  "scripts": {
+    "build": "tsc && node dist/build.js",
+    "watch": "tsc && node dist/build.js --watch",
+    "dev": "concurrently \"npm run watch\" \"live-server dist --port=3000 --wait=500\"",
+    "serve": "npm run build && live-server dist --port=3000",
+    "clean": "rimraf dist",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix"
+  },
+  "keywords": [
+    "blog",
+    "typescript",
+    "scss",
+    "static-site-generator"
+  ],
+  "author": "Elias Cecetka",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/marked": "^6.0.0",
+    "@types/node": "^24.5.2",
+    "@typescript-eslint/eslint-plugin": "^8.44.0",
+    "@typescript-eslint/parser": "^8.44.0",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.36.0",
+    "live-server": "^1.2.2",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "chokidar": "^4.0.3",
+    "gray-matter": "^4.0.3",
+    "marked": "^16.3.0",
+    "sass": "^1.92.1"
+  }
+}

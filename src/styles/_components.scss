@@ -1,0 +1,153 @@
+@use "sass:color";
+@use "sass:map";
+@use "variables" as *;
+
+// Site header
+.site-header {
+  background-color: color(background);
+  border-bottom: 1px solid color(border);
+  padding: spacing(md) 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+// Navigation
+.nav {
+  max-width: map.get($layout, max-width);
+  margin: 0 auto;
+  padding: 0 spacing(md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &-home {
+    font-size: font-size(lg);
+    font-weight: 700;
+    color: color(primary);
+    text-decoration: none;
+    margin-bottom: 0;
+
+    &:hover {
+      color: color(accent);
+      text-decoration: none;
+    }
+  }
+}
+
+// Main content
+.main-content {
+  flex: 1;
+  max-width: map.get($layout, max-width);
+  margin: 0 auto;
+  padding: spacing(xl) spacing(md);
+  width: 100%;
+}
+
+// Site footer
+.site-footer {
+  background-color: color(background-light);
+  border-top: 1px solid color(border);
+  padding: spacing(lg) 0;
+  text-align: center;
+  color: color(text-light);
+  font-size: 0.9rem;
+
+  p {
+    max-width: map.get($layout, max-width);
+    margin: 0 auto;
+    padding: 0 spacing(md);
+  }
+}
+
+// Post components
+.post-preview {
+  margin-bottom: spacing(xl);
+  padding-bottom: spacing(lg);
+  border-bottom: 1px solid color(border);
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  h2 {
+    margin-bottom: spacing(xs);
+
+    a {
+      color: color(primary);
+      text-decoration: none;
+
+      &:hover {
+        color: color(accent);
+      }
+    }
+  }
+}
+
+.post-meta {
+  display: flex;
+  gap: spacing(sm);
+  margin-bottom: spacing(sm);
+  font-size: 0.9rem;
+  color: color(text-light);
+
+  &-date {
+    font-weight: 500;
+  }
+
+  .author::before {
+    content: "•";
+    margin-right: spacing(xs);
+  }
+}
+
+.post-description {
+  color: color(text-light);
+  margin-bottom: 0;
+}
+
+// Individual post
+.post-header {
+  margin-bottom: spacing(xl);
+  text-align: center;
+  padding-bottom: spacing(lg);
+  border-bottom: 1px solid color(border);
+
+  .post-title {
+    font-size: font-size(xxl);
+    margin-bottom: spacing(md);
+    line-height: 1.2;
+  }
+
+  .post-meta {
+    justify-content: center;
+    gap: spacing(md);
+    font-size: 0.95rem;
+
+    .post-author::before {
+      content: "•";
+      margin-right: spacing(xs);
+    }
+  }
+}
+
+.post-content {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-top: spacing(lg);
+    margin-bottom: spacing(md);
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  p {
+    margin-bottom: spacing(md);
+  }
+}
