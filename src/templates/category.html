@@ -4,29 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ title }}</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="{{ baseUrl }}/favicon.ico" />
     {{ seoMeta }}
-    <link rel="stylesheet" href="../../styles/main.css" />
+    <link rel="stylesheet" href="{{ baseUrl }}/styles/main.css" />
     <link
       rel="alternate"
       type="application/rss+xml"
       title="{{ title }} RSS Feed"
-      href="/feed.xml"
+      href="{{ baseUrl }}/feed.xml"
     />
     <link
       rel="alternate"
       type="application/atom+xml"
       title="{{ title }} Atom Feed"
-      href="/atom.xml"
+      href="{{ baseUrl }}/atom.xml"
     />
   </head>
   <body>
     <header class="site-header">
       <nav class="nav">
-        <a href="/" class="nav-home">← {{ siteTitle }}</a>
+        <a href="{{ baseUrl }}/" class="nav-home">← {{ siteTitle }}</a>
         <div class="feed-links">
           <a
-            href="/feed.xml"
+            href="{{ baseUrl }}/feed.xml"
             class="feed-link rss"
             title="Subscribe to RSS Feed"
           >
@@ -34,7 +34,7 @@
             <span class="feed-text">RSS</span>
           </a>
           <a
-            href="/atom.xml"
+            href="{{ baseUrl }}/atom.xml"
             class="feed-link atom"
             title="Subscribe to Atom Feed"
           >

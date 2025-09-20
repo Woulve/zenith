@@ -27,5 +27,5 @@ export const config: BlogConfig = {
   publicDir: path.join(__dirname, '..', 'public'),
   siteTitle: 'Zenith',
   siteDescription: 'A minimalistic personal blog',
-  baseUrl: 'https://domain.com',
+  baseUrl: process.env.NODE_ENV === 'production' ? '/zenith' : '',
 };

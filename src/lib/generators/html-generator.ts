@@ -12,10 +12,11 @@ export interface PaginationInfo {
 
 export class HtmlGenerator {
   static generatePostPreview(post: Post): string {
+    const baseUrl = process.env.NODE_ENV === 'production' ? '/zenith' : '';
     const categoriesHtml = post.categories
       .map(
         (cat) =>
-          `<a href="/categories/${Utils.slugify(
+          `<a href="${baseUrl}/categories/${Utils.slugify(
             cat,
           )}/" class="category-tag">${cat}</a>`,
       )
@@ -23,7 +24,7 @@ export class HtmlGenerator {
 
     return `
       <article class="post-preview">
-        <h2><a href="/posts/${post.slug}/">${post.title}</a></h2>
+        <h2><a href="${baseUrl}/posts/${post.slug}/">${post.title}</a></h2>
         <div class="post-meta">
           <time datetime="${post.date}">${Utils.formatDate(post.date)}</time>
           <div class="post-categories">${categoriesHtml}</div>
@@ -85,10 +86,11 @@ export class HtmlGenerator {
   }
 
   static generateCategoriesHtml(categories: string[]): string {
+    const baseUrl = process.env.NODE_ENV === 'production' ? '/zenith' : '';
     return categories
       .map(
         (cat) =>
-          `<a href="/categories/${Utils.slugify(
+          `<a href="${baseUrl}/categories/${Utils.slugify(
             cat,
           )}/" class="category-tag">${cat}</a>`,
       )

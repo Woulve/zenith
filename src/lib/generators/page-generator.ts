@@ -56,6 +56,7 @@ export class PageGenerator {
         categories: categoriesHtml,
         seoMeta,
         siteTitle: config.siteTitle,
+        baseUrl: config.baseUrl,
       });
 
       operations.push({
@@ -115,6 +116,7 @@ export class PageGenerator {
         pagination: paginationHtml,
         seoMeta,
         siteTitle: config.siteTitle,
+        baseUrl: config.baseUrl,
       });
 
       if (page === 1) {
@@ -180,6 +182,7 @@ export class PageGenerator {
         pagination: '',
         seoMeta,
         siteTitle: config.siteTitle,
+        baseUrl: config.baseUrl,
       });
 
       operations.push({
