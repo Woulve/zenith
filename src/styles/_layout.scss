@@ -1,10 +1,11 @@
 @use "variables" as *;
 
 .main-content {
+  flex: 1;
   max-width: $max-width-content;
   margin: 0 auto;
   padding: $spacing-2xl $container-padding;
-  min-height: calc(100vh - 200px);
+  width: 100%;
 }
 
 .site-header {
@@ -23,7 +24,7 @@
   background-color: $background-alt;
   border-top: 1px solid $border-color;
   padding: $spacing-2xl 0 $spacing-xl;
-  margin-top: $spacing-2xl;
+  margin-top: auto;
 
   &__container {
     max-width: $max-width-content;
