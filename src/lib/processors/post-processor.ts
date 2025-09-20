@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { marked } from 'marked';
+import markedFootnote from 'marked-footnote';
 import matter from 'gray-matter';
 import { config } from '../../config.js';
 import {
@@ -14,9 +15,35 @@ export interface Post extends PostMetadata {
 }
 
 export class PostProcessor {
-  async loadPosts(): Promise<Post[]> {
-    console.log('📄 Loading posts...');
+  private abbreviations: { [key: string]: string } = {};
 
+  constructor() {
+    marked.use(markedFootnote());
+  }
+
+  private processAbbreviations(content: string): string {
+    this.abbreviations = {};
+
+    content = content.replace(
+      /\*\[([^\]]+)\]:\s*(.+)/gm,
+      (match, abbr, definition) => {
+        this.abbreviations[abbr] = definition.trim();
+        return '';
+      },
+    );
+
+    for (const abbr in this.abbreviations) {
+      const regex = new RegExp(`\\b${abbr}\\b`, 'g');
+      content = content.replace(
+        regex,
+        `<abbr title="${this.abbreviations[abbr]}">${abbr}</abbr>`,
+      );
+    }
+
+    return content;
+  }
+
+  async loadPosts(): Promise<Post[]> {
     try {
       await fs.access(config.postsDir);
     } catch {
@@ -25,7 +52,7 @@ export class PostProcessor {
     }
 
     const files = await fs.readdir(config.postsDir);
-    const postFiles = files.filter((file) => file.endsWith('.md'));
+    const postFiles = files.filter((f) => f.endsWith('.md'));
 
     const posts = await Promise.all(
       postFiles.map(async (file) => {
@@ -34,15 +61,15 @@ export class PostProcessor {
         const { data, content } = matter(fileContent);
 
         const validation = FrontmatterValidator.validate(data, file);
-
-        validation.warnings.forEach((warning) => console.warn(`⚠️ ${warning}`));
+        validation.warnings.forEach((w) => console.warn(`⚠️ ${w}`));
 
         if (!validation.isValid) {
           console.error(`❌ Skipping ${file} due to validation errors`);
           return null;
         }
 
-        const htmlContent = await marked(content);
+        const processedContent = this.processAbbreviations(content);
+        const htmlContent = await marked(processedContent);
 
         return {
           ...validation.metadata,
@@ -52,11 +79,9 @@ export class PostProcessor {
       }),
     );
 
-    const validPosts = posts.filter((post): post is Post => post !== null);
-
-    return validPosts.sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-    );
+    return posts
+      .filter((p): p is Post => p !== null)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }
 
   async loadTemplate(templateName: string): Promise<string> {

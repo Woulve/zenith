@@ -15,6 +15,7 @@ export interface BlogConfig {
   siteTitle: string;
   siteDescription: string;
   baseUrl: string;
+  siteUrl: string;
 }
 
 export const config: BlogConfig = {
@@ -27,5 +28,6 @@ export const config: BlogConfig = {
   publicDir: path.join(__dirname, '..', 'public'),
   siteTitle: 'Zenith',
   siteDescription: 'A minimalistic personal blog',
-  baseUrl: process.env.NODE_ENV === 'production' ? '/zenith' : '',
+  baseUrl: '/zenith',
+  siteUrl: 'https://woulve.github.io/zenith',
 };

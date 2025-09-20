@@ -1,0 +1,13 @@
+<article class="post-detail">
+  <header class="post-detail__header">
+    <h1 class="post-detail__title">{{ title }}</h1>
+    <div class="post-detail__meta">
+      <time class="post-detail__date" datetime="{{ date }}"
+        >{{ formattedDate }}</time
+      >
+      <div class="post-detail__categories">{{ categoriesHtml }}</div>
+    </div>
+  </header>
+
+  <div class="post-detail__content">{{ content }}</div>
+</article>

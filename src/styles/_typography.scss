@@ -1,0 +1,59 @@
+@use "variables" as *;
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  line-height: 1.25;
+  color: $text-primary;
+  margin: 0 0 $spacing-md 0;
+}
+
+h1 {
+  font-size: $font-size-3xl;
+}
+
+h2 {
+  font-size: $font-size-2xl;
+}
+
+h3 {
+  font-size: $font-size-xl;
+}
+
+p {
+  margin-bottom: $spacing-md;
+  line-height: 1.625;
+}
+
+a {
+  color: $primary-color;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.2s ease-in-out;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: $primary-color;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  &:hover {
+    color: $primary-hover;
+
+    &::after {
+      transform: scaleX(1);
+      background: $primary-hover;
+    }
+  }
+}

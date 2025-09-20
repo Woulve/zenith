@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="darkreader-lock" />
+    <title>{{ pageTitle }}</title>
+    <link rel="icon" type="image/x-icon" href="{{ baseUrl }}/favicon.ico" />
+    {{ seoMeta }}
+    <link rel="stylesheet" href="{{ cssPath }}" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="{{ feedTitle }} RSS Feed"
+      href="{{ baseUrl }}/feed.xml"
+    />
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="{{ feedTitle }} Atom Feed"
+      href="{{ baseUrl }}/atom.xml"
+    />
+  </head>
+  <body>
+    {{ header }}
+
+    <main class="main-content">{{ content }}</main>
+
+    {{ footer }}
+  </body>
+</html>

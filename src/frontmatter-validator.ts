@@ -1,3 +1,5 @@
+import { TemplateEngine, CategoryValidationError } from './template-engine.js';
+
 export interface PostMetadata {
   title: string;
   date: string;
@@ -92,6 +94,21 @@ export class FrontmatterValidator {
       warnings.push(
         `No categories specified in ${filename}. Using 'uncategorized'.`,
       );
+    }
+
+    // Validate categories
+    try {
+      TemplateEngine.validateCategories(metadata.categories, filename);
+    } catch (error) {
+      if (error instanceof CategoryValidationError) {
+        warnings.push(`❌ ${error.message}`);
+        return {
+          isValid: false,
+          warnings,
+          metadata: metadata as PostMetadata,
+        };
+      }
+      throw error;
     }
 
     const isValid = this.REQUIRED_FIELDS.every(

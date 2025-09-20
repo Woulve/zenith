@@ -9,7 +9,11 @@ export class SitemapGenerator {
 
   async generate(posts: Post[]): Promise<void> {
     console.log('🗺️ Generating sitemap...');
+    const content = await this.generateContent(posts);
+    await fs.writeFile(path.join(config.distDir, 'sitemap.xml'), content);
+  }
 
+  async generateContent(posts: Post[]): Promise<string> {
     const urls = [
       {
         loc: config.baseUrl,
@@ -51,7 +55,7 @@ export class SitemapGenerator {
       });
     });
 
-    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+    return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls
   .map(
@@ -64,7 +68,5 @@ ${urls
   )
   .join('\n')}
 </urlset>`;
-
-    await fs.writeFile(path.join(config.distDir, 'sitemap.xml'), sitemap);
   }
 }

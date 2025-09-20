@@ -1,0 +1,15 @@
+<article class="post-preview">
+  <h2 class="post-preview__title">
+    <a href="{{ url }}">{{ title }}</a>
+  </h2>
+  <div class="post-preview__meta">
+    <time class="post-preview__date" datetime="{{ date }}"
+      >{{ formattedDate }}</time
+    >
+    <div class="post-preview__categories">{{ categoriesHtml }}</div>
+  </div>
+  <p class="post-preview__description">{{ description }}</p>
+  <div>
+    <a class="post-preview__read-more" href="{{ url }}"> Read more → </a>
+  </div>
+</article>

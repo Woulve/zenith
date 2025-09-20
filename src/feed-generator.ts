@@ -16,7 +16,7 @@ export class FeedGenerator {
 
     const items = latestPosts
       .map((post) => {
-        const postUrl = `${config.baseUrl}/posts/${post.slug}/`;
+        const postUrl = `${config.siteUrl}/posts/${post.slug}/`;
         const postDate = new Date(post.date).toUTCString();
 
         return `    <item>
@@ -34,8 +34,8 @@ export class FeedGenerator {
   <channel>
     <title><![CDATA[${config.siteTitle}]]></title>
     <description><![CDATA[${config.siteDescription}]]></description>
-    <link>${config.baseUrl}</link>
-    <atom:link href="${config.baseUrl}/feed.xml" rel="self" type="application/rss+xml"/>
+    <link>${config.siteUrl}</link>
+    <atom:link href="${config.siteUrl}/feed.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
     <lastBuildDate>${lastBuildDate}</lastBuildDate>
     <pubDate>${pubDate}</pubDate>
@@ -54,7 +54,7 @@ ${items}
 
     const entries = latestPosts
       .map((post) => {
-        const postUrl = `${config.baseUrl}/posts/${post.slug}/`;
+        const postUrl = `${config.siteUrl}/posts/${post.slug}/`;
         const postDate = new Date(post.date).toISOString();
 
         return `  <entry>
@@ -71,10 +71,10 @@ ${items}
     return `<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title type="text">${config.siteTitle}</title>
-  <link href="${config.baseUrl}/atom.xml" rel="self"/>
-  <link href="${config.baseUrl}"/>
+  <link href="${config.siteUrl}/atom.xml" rel="self"/>
+  <link href="${config.siteUrl}"/>
   <updated>${updated}</updated>
-  <id>${config.baseUrl}/</id>
+  <id>${config.siteUrl}/</id>
   <subtitle type="html"><![CDATA[${config.siteDescription}]]></subtitle>
   <generator uri="https://github.com/woulve/zenith" version="1.0.0">Zenith</generator>
 ${entries}
